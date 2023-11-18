@@ -5,6 +5,7 @@ using HotelServer.Data;
 using HotelServer.Model;
 using HotelServer.Service;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,7 @@ namespace HotelServer.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [EnableCors("_myAllowSpecificOrigins")]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;

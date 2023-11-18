@@ -17,6 +17,7 @@ namespace HotelServer
 {
     public class Startup
     {
+        public string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public void ConfigureServices(IServiceCollection services, string connectString)
         {
             services.AddAuthorization(options =>
@@ -54,8 +55,14 @@ namespace HotelServer
             .AddEntityFrameworkStores<HotelDbContext>()
             .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
-            // Add your service dependencies, for example:
-            //services.AddScoped<IUserService, UserService>();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("https://localhost:7211").AllowAnyHeader().AllowAnyMethod();
+                                  });
+            });
         }  
 
         public void ConfigAuthentication(WebApplicationBuilder builder)
@@ -90,7 +97,7 @@ namespace HotelServer
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseCors(MyAllowSpecificOrigins);
         }
 
     }

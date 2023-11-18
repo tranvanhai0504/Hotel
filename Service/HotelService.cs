@@ -13,6 +13,7 @@ namespace HotelServer.Service
         Hotel GetById(string id);
         IEnumerable<Hotel> GetAll();
         void ChangeImage(string imageURL, string id);
+        IEnumerable<TypeHotel> GetTypes();
         
     }
     public class HotelService : IHotelService
@@ -50,6 +51,11 @@ namespace HotelServer.Service
         public Hotel GetById(string id)
         {
             return _hotelRepository.GetSingleById(id);
+        }
+
+        public IEnumerable<TypeHotel> GetTypes()
+        {
+            return _hotelRepository.GetTypes();
         }
 
         public void Update(Hotel hotel)

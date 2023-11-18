@@ -6,7 +6,7 @@ namespace HotelServer.Data.Respositories
 {
     public interface IHotelRepository : IRepository<Hotel>
     {
-
+        IEnumerable<TypeHotel> GetTypes();
     }
     public class HotelRepository : RepositoryBase<Hotel>, IHotelRepository
     {
@@ -14,6 +14,11 @@ namespace HotelServer.Data.Respositories
         public HotelRepository(IDbFactory dbFactory) : base(dbFactory)
         {
 
+        }
+
+        public IEnumerable<TypeHotel> GetTypes()
+        {
+            return DbContext.TypeHotel.ToList();
         }
     }
 }
