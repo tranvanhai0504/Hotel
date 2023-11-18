@@ -11,7 +11,7 @@ namespace HotelServer.Data
         public virtual DbSet<Hotel> Hotels { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<TypeHotel> TypeHotel { get; set; }
-        public virtual DbSet<TypeRoom> TypeRooms { get; set; }
+        public virtual DbSet<TypeRoom> TypeRoom { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -8,7 +8,7 @@ namespace HotelServer.Data.Respositories
     public interface IHotelRepository : IRepository<Hotel>
     {
         IEnumerable<TypeHotel> GetTypes();
-        IEnumerable<ExpandoObject> GetAllRooms(string id);
+        IEnumerable<Room> GetAllRooms(string id);
     }
     public class HotelRepository : RepositoryBase<Hotel>, IHotelRepository
     {
@@ -18,21 +18,9 @@ namespace HotelServer.Data.Respositories
 
         }
 
-        public IEnumerable<ExpandoObject> GetAllRooms(string id)
+        public IEnumerable<Room> GetAllRooms(string id)
         {
-            var rooms = DbContext.Rooms.Where(room => room.HotelId == id).ToList();
-            var roomTypes = DbContext.TypeRooms.ToList();
-            var listRooms = new List<ExpandoObject>();
-
-            foreach (Room room in rooms)
-            {
-                dynamic a = new ExpandoObject();
-                a.Name = roomTypes.Find(type => type.Id == room.QuantityId).Name;
-                a.Id = room.Id;
-
-
-            }
-            return listRooms;
+            return DbContext.Rooms.Where(room => room.HotelId == id).ToList();
         }
 
         public IEnumerable<TypeHotel> GetTypes()
