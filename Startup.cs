@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Configuration;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace HotelServer
 {
@@ -32,14 +33,21 @@ namespace HotelServer
 
             services.AddSingleton<IDbFactory, DbFactory>();
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
+            //hotel
             services.AddSingleton<IHotelRepository, HotelRepository>();
             services.AddSingleton<IHotelService, HotelService>();
+            //bill
+            services.AddSingleton<IBillRepository, BillRepository>();
+            services.AddSingleton<IBillService, BillService>();
 
             services.AddTransient<IMailService, MailService>();
 
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+
+            services.AddControllers().AddJsonOptions(x =>
+                        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
             services.AddDbContext<HotelDbContext>();
             services.AddIdentityCore<User>(options =>

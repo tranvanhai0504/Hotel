@@ -7,12 +7,23 @@ using HotelServer.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace HotelServer.Controllers
 {
+    public interface IHotelController
+    {
+        public IActionResult GetAll();
+        public IActionResult GetAllTypeHotel();
+        public IActionResult GetDetail(string id);
+        public IActionResult AddHotel(Hotel hotel);
+        public IActionResult DeleteHotel(SingleIdHotelRequest request);
+        public IActionResult UpdateHotel(Hotel hotel);
+    }
+
     [Route("[controller]")]
     [ApiController]
-    public class HotelController : ControllerBase
+    public class HotelController : ControllerBase, IHotelController
     {
         private readonly IHotelService _hotelService;
         private readonly IUnitOfWork _unitOfWork;
@@ -40,16 +51,25 @@ namespace HotelServer.Controllers
 
         [HttpGet("getDetail")]
         [Authorize]
-        public IActionResult GetDetail(SingleIdHotelRequest request) {
+        public IActionResult GetDetail(string id) {
 
             var response = new AuthResponse();
-            if(request.Id != null)
+            if(id == null)
             {
                 response.State = false;
                 response.Message = "Id must not null";
                 return BadRequest(response);
             }
-            var hoteldb = _hotelService.GetById(request.Id);
+            var hoteldb = _hotelService.GetById(id);
+            if(hoteldb == null)
+            {
+                response.State = false;
+                response.Message = "Can't get hotel by this id";
+                return BadRequest(response);
+            }
+
+            var roomOfHotel = _hotelService.GetAllRooms(hoteldb.Id);
+            hoteldb.Rooms = roomOfHotel;
 
             response.State = true;
             response.Message = "Success";

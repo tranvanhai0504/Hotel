@@ -23,7 +23,7 @@ namespace HotelServer.Model
         public string PayType { get; set; }
         [Required]
         public string Image { get; set; }
-        public ICollection<Room> Rooms { get; set; }
+        public IEnumerable<Room> Rooms { get; set; }
     }
 }
  

@@ -11,6 +11,6 @@ namespace HotelServer.Model
         [Required]
         public string Name { get; set; }
 
-        public ICollection<Hotel> Hotels { get; set; }
+        public IEnumerable<Hotel> Hotels { get; set; }
     }
 }

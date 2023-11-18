@@ -14,6 +14,8 @@ namespace HotelServer.Service
         IEnumerable<Hotel> GetAll();
         void ChangeImage(string imageURL, string id);
         IEnumerable<TypeHotel> GetTypes();
+        void SaveChanges();
+        IEnumerable<Room> GetAllRooms(string hotelId);
         
     }
     public class HotelService : IHotelService
@@ -30,22 +32,30 @@ namespace HotelServer.Service
         public void Add(Hotel hotel)
         {
             _hotelRepository.Add(hotel);
+            SaveChanges();
         }
 
         public void ChangeImage(string imageURL, string id)
         {
             Hotel hotel = GetById(id);
             _hotelRepository.Update(hotel);
+            SaveChanges();
         }
 
         public void Delete(string id)
         {
             _hotelRepository.Delete(GetById(id));
+            SaveChanges();
         }
 
         public IEnumerable<Hotel> GetAll()
         {
             return _hotelRepository.GetAll(new string[] {"Hotels"});
+        }
+
+        public IEnumerable<Room> GetAllRooms(string hotelId)
+        {
+            return _hotelRepository.GetAllRooms(hotelId);
         }
 
         public Hotel GetById(string id)
@@ -58,9 +68,15 @@ namespace HotelServer.Service
             return _hotelRepository.GetTypes();
         }
 
+        public void SaveChanges()
+        {
+            _unitOfWork.Commit();
+        }
+
         public void Update(Hotel hotel)
         {
             _hotelRepository.Update(hotel);
+            SaveChanges();
         }
     }
 }

@@ -17,10 +17,19 @@ using System.Text;
 
 namespace HotelServer.Controllers
 {
+    public interface IAccountController
+    {
+        public Task<IActionResult> Register(RegistrationRequest request);
+        public Task<ActionResult<AuthResponse>> Authenticate([FromBody] AuthRequest request);
+        public Task<IActionResult> ChangePassword(ChangePasswordRequest request);
+        public Task<IActionResult> ForgotPassword(ForgotPasswordRequest request);
+        public Task<IActionResult> ResetPassword(ResetPasswordRequest request);
+    }
+
     [Route("[controller]")]
     [ApiController]
     [EnableCors("_myAllowSpecificOrigins")]
-    public class AccountController : ControllerBase
+    public class AccountController : ControllerBase, IAccountController
     {
         private readonly UserManager<User> _userManager;
         private readonly HotelDbContext _context;
@@ -43,25 +52,28 @@ namespace HotelServer.Controllers
         [Route("register")]
         public async Task<IActionResult> Register(RegistrationRequest request)
         {
+            var response = new AuthResponse();
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                response.State = false;
+                response.Message = "A error has occurred!";
+                return BadRequest(response);
             }
 
             var result = await _userManager.CreateAsync(
             new User { UserName = request.Username, Email = request.Email, Name = request.Name, Role = "user" },
             request.Password
             );
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                request.Password = "";
-                return CreatedAtAction(nameof(Register), new { email = request.Email }, request);
+                response.State = false;
+                response.Message = "Fail to create account";
+                return BadRequest(response);
             }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(error.Code, error.Description);
-            }
-            return BadRequest(ModelState);
+
+            response.State = true;
+            response.Message = "Success created account";
+            return Ok(response);
         }
 
         [HttpPost]
@@ -106,8 +118,9 @@ namespace HotelServer.Controllers
             return Ok(new AuthResponse
             {
                 State = true,
-                Message = GeneralToken(userInDb)
-            }); ;
+                Message = GeneralToken(userInDb),
+                Data = new {Role = userInDb.Role}
+            });
         }
 
         [HttpPost]
@@ -243,8 +256,6 @@ namespace HotelServer.Controllers
         //    {
         //        return BadRequest(ModelState);
         //    }
-
-
         //}
         
         private string GeneralToken(User user)
