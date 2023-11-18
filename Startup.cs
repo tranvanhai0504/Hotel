@@ -68,7 +68,7 @@ namespace HotelServer
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins("https://localhost:7211").AllowAnyHeader().AllowAnyMethod();
+                                      policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
                                   });
             });
         }  
