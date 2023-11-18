@@ -2,7 +2,7 @@
 
 namespace HotelServer.Controllers.request
 {
-    public class SingleIdHotelRequest
+    public class SingleIdRequest
     {
         [Required]
         public string Id { get; set; }

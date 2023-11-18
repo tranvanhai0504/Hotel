@@ -17,7 +17,7 @@ namespace HotelServer.Controllers
         public IActionResult GetAllTypeHotel();
         public IActionResult GetDetail(string id);
         public IActionResult AddHotel(Hotel hotel);
-        public IActionResult DeleteHotel(SingleIdHotelRequest request);
+        public IActionResult DeleteHotel(SingleIdRequest request);
         public IActionResult UpdateHotel(Hotel hotel);
     }
 
@@ -28,9 +28,9 @@ namespace HotelServer.Controllers
         private readonly IHotelService _hotelService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public HotelController(IHotelService userService, IUnitOfWork unitOfWork)
+        public HotelController(IHotelService hotelService, IUnitOfWork unitOfWork)
         {
-            _hotelService = userService;
+            _hotelService = hotelService;
             _unitOfWork = unitOfWork;
         }
 
@@ -88,7 +88,7 @@ namespace HotelServer.Controllers
             hotel.Id = Id;
 
             //validate hotel
-            if(hotel.Name != null)
+            if(hotel.Name == null)
             {
                 response.State = false;
                 response.Message = "missing field required!";
@@ -105,14 +105,14 @@ namespace HotelServer.Controllers
             return Ok(response);
         }
 
-        [HttpPost("delete")]
+        [HttpDelete("delete")]
         [Authorize(Roles = "admin")]
-        public IActionResult DeleteHotel(SingleIdHotelRequest request)
+        public IActionResult DeleteHotel(SingleIdRequest request)
         {
             var response = new AuthResponse();
             //check id is exist
             var hotel = _hotelService.GetById(request.Id);
-            if(hotel != null)
+            if(hotel == null)
             {
                 response.State = false;
                 response.Message = "Hotel does not exist!";
@@ -129,7 +129,7 @@ namespace HotelServer.Controllers
             return Ok(response);
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         [Authorize(Roles = "admin")]
         public IActionResult UpdateHotel(Hotel hotel)
         {
@@ -137,7 +137,7 @@ namespace HotelServer.Controllers
             //generate ID
 
             //validate hotel
-            if (hotel.Name != null)
+            if (hotel.Name == null)
             {
                 response.State = false;
                 response.Message = "missing field required!";
@@ -145,7 +145,7 @@ namespace HotelServer.Controllers
             };
 
             var hotelDb = _hotelService.GetById(hotel.Id);
-            if (hotelDb != null)
+            if (hotelDb == null)
             {
                 response.State = false;
                 response.Message = "Hotel does not exist!";
@@ -157,7 +157,7 @@ namespace HotelServer.Controllers
             _unitOfWork.Commit();
 
             response.State = true;
-            response.Message = "update new hotel successful!";
+            response.Message = "update hotel successful!";
 
             return Ok(response);
         }

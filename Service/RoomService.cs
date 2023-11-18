@@ -13,7 +13,9 @@ namespace HotelServer.Service
         IEnumerable<Room> GetAll();
         void ChangeAmount(string id,  int amount);
         void ChangeImage(string id, string image);
-        
+        IEnumerable<TypeRoom> GetTypeRooms();
+
+        TypeRoom GetTypeOfRoom(string idType);
     } 
     public class RoomService : IRoomService
     {
@@ -55,6 +57,11 @@ namespace HotelServer.Service
             return _roomsRepository.GetAll(new string[] {"Rooms"});
         }
 
+        public IEnumerable<TypeRoom> GetTypeRooms()
+        {
+            return _roomsRepository.GetTypeRooms();
+        }
+
         public Room GetById(string id)
         {
             return _roomsRepository.GetSingleById(id);
@@ -63,6 +70,12 @@ namespace HotelServer.Service
         public void Update(Room room)
         {
             _roomsRepository.Update(room);
+        }
+
+        public TypeRoom GetTypeOfRoom(string idType)
+        {
+            var type = _roomsRepository.GetTypeOfRoom(idType);
+            return type;
         }
     }
 }

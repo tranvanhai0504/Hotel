@@ -24,6 +24,7 @@ namespace HotelServer.Controllers
         public Task<IActionResult> ChangePassword(ChangePasswordRequest request);
         public Task<IActionResult> ForgotPassword(ForgotPasswordRequest request);
         public Task<IActionResult> ResetPassword(ResetPasswordRequest request);
+        public Task<IActionResult> GetInfor(SingleIdRequest request);
     }
 
     [Route("[controller]")]
@@ -278,6 +279,35 @@ namespace HotelServer.Controllers
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("getInfor")]
+        public async Task<IActionResult> GetInfor(SingleIdRequest request)
+        {
+            var response = new AuthResponse();
+            if(request.Id == null)
+            {
+                response.State = false;
+                response.Message = "Id must not null";
+                return BadRequest(response);
+            }
+
+            var user = await _userManager.FindByIdAsync(request.Id);
+            if (user == null)
+            {
+                response.State = false;
+                response.Message = "User is not exist!";
+                return BadRequest(response);
+            }
+
+            user.PasswordHash = "";
+
+            response.State = true;
+            response.Message = "Get infor successful!";
+            response.Data = user;
+            return Ok(response);
         }
     }
 }
