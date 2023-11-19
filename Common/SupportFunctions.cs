@@ -12,5 +12,10 @@
         {
             return BCrypt.Net.BCrypt.Verify(nativePassword, hashPassword);
         }
+
+        public static string GeneralId(string head)
+        {
+            return head + DateTime.Now.ToString("yyyyMMddHHmmssffffff");
+        }
     }
 }

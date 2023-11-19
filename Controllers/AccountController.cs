@@ -120,7 +120,7 @@ namespace HotelServer.Controllers
             {
                 State = true,
                 Message = GeneralToken(userInDb),
-                Data = new {Role = userInDb.Role, Id = userInDb.Id}
+                Data = new {Role = userInDb.Role, Id = userInDb.Id, Name = userInDb.Name}
             });
         }
 

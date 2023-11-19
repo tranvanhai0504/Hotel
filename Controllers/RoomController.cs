@@ -1,4 +1,5 @@
-﻿using HotelServer.Controllers.request;
+﻿using HotelServer.Common;
+using HotelServer.Controllers.request;
 using HotelServer.Data.Infrastructure;
 using HotelServer.Model;
 using HotelServer.Service;
@@ -38,7 +39,7 @@ namespace HotelServer.Controllers
         {
             var response = new AuthResponse();
             //generate ID
-            var Id = "H" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            var Id = SupportFunctions.GeneralId("R");
             room.Id = Id;
 
             //add to Db

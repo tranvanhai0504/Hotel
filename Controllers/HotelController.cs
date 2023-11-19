@@ -84,7 +84,7 @@ namespace HotelServer.Controllers
         {
             var response = new AuthResponse();
             //generate ID
-            var Id = "H" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            var Id = SupportFunctions.GeneralId("H");
             hotel.Id = Id;
 
             //validate hotel

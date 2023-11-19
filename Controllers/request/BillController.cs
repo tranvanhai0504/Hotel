@@ -14,6 +14,7 @@ namespace HotelServer.Controllers.request
         public Task<IActionResult> GetBillDetail(String idBill);
         public Task<IActionResult> AddBill(Bill bill);
         public Task<IActionResult> UpdateBill(Bill bill);
+        public Task<IActionResult> CancelBill(String idBill);
         //admin
         public Task<IActionResult> DeleteBill(String idBill);
         //user
