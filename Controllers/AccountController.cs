@@ -120,11 +120,11 @@ namespace HotelServer.Controllers
             {
                 State = true,
                 Message = GeneralToken(userInDb),
-                Data = new {Role = userInDb.Role}
+                Data = new {Role = userInDb.Role, Id = userInDb.Id}
             });
         }
 
-        [HttpPost]
+        [HttpPut]
         [AllowAnonymous]
         [Route("changePassword")]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
@@ -149,8 +149,8 @@ namespace HotelServer.Controllers
                 return BadRequest(response);
             }
 
-            var result = _userManager.ChangePasswordAsync(managedUser, request.Password, request.OldPassword);
-            if(!result.IsCompleted)
+            var result = await _userManager.ChangePasswordAsync(managedUser, request.OldPassword, request.Password);
+            if(!result.Succeeded)
             {
                 response.State = false;
                 response.Message = "A error have occurred!";
@@ -206,7 +206,7 @@ namespace HotelServer.Controllers
         }
         
         
-        [HttpPost]
+        [HttpPut]
         [AllowAnonymous]
         [Route("resetPassword")]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
@@ -282,7 +282,7 @@ namespace HotelServer.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize]
         [Route("getInfor")]
         public async Task<IActionResult> GetInfor(SingleIdRequest request)
         {
@@ -309,5 +309,47 @@ namespace HotelServer.Controllers
             response.Data = user;
             return Ok(response);
         }
+        
+        
+        [HttpPut]
+        [Authorize]
+        [Route("updateInfor")]
+        public async Task<IActionResult> ChangeInfor(ChangeInforRequest request)
+        {
+            var response = new AuthResponse();
+            //get user from db
+            var userdb = await _userManager.FindByIdAsync(request.Id);
+            if (userdb == null)
+            {
+                response.State = false;
+                response.Message = "Account does not exist!";
+                return BadRequest(response);
+            }
+
+            //validate
+            if(request.Email == string.Empty)
+            {
+                response.State = false;
+                response.Message = "missing fields required";
+                return BadRequest(response);
+            }
+
+            userdb.Email = request.Email;
+            userdb.PhoneNumber = request.PhoneNumber;
+            userdb.Address = request.address;
+
+            var result = await _userManager.UpdateAsync(userdb);
+            if (!result.Succeeded)
+            {
+                response.State = false;
+                response.Message = result.Errors.First().Description;
+                return BadRequest(response);
+            }
+
+            response.State = true;
+            response.Message = "Update information successful!";
+            return Ok(response);
+        }
+
     }
 }
