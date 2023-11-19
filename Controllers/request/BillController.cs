@@ -12,9 +12,7 @@ namespace HotelServer.Controllers.request
     {
         //all
         public Task<IActionResult> GetBillDetail(String idBill);
-        //admin
         public Task<IActionResult> AddBill(Bill bill);
-        //all
         public Task<IActionResult> UpdateBill(Bill bill);
         //admin
         public Task<IActionResult> DeleteBill(String idBill);

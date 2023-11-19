@@ -24,7 +24,7 @@ namespace HotelServer.Controllers
         public Task<IActionResult> ChangePassword(ChangePasswordRequest request);
         public Task<IActionResult> ForgotPassword(ForgotPasswordRequest request);
         public Task<IActionResult> ResetPassword(ResetPasswordRequest request);
-        public Task<IActionResult> GetInfor(SingleIdRequest request);
+        public Task<IActionResult> GetInfor(string i);
     }
 
     [Route("[controller]")]
@@ -284,17 +284,17 @@ namespace HotelServer.Controllers
         [HttpGet]
         [Authorize]
         [Route("getInfor")]
-        public async Task<IActionResult> GetInfor(SingleIdRequest request)
+        public async Task<IActionResult> GetInfor([FromQuery]string id)
         {
             var response = new AuthResponse();
-            if(request.Id == null)
+            if(id == null)
             {
                 response.State = false;
                 response.Message = "Id must not null";
                 return BadRequest(response);
             }
 
-            var user = await _userManager.FindByIdAsync(request.Id);
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 response.State = false;
