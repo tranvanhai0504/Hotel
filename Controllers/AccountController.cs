@@ -247,47 +247,14 @@ namespace HotelServer.Controllers
 
             return Ok(response);
         }
-        
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[Route("verifi")]
-        //public async Task<IActionResult> VerifyAccount(VerifyAccountRequest request)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-        //}
-        
-        private string GeneralToken(User user)
-        {
-            var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
-
-            var authenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:IssuerSigningKey"]));
-
-            var token = new JwtSecurityToken(
-                    issuer: configuration["JWT:ValidIssuer"],
-                    audience: configuration["JWT:ValidAudience"],
-                    expires: DateTime.UtcNow.AddDays(1),
-                    claims: authClaims,
-                    signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
 
         [HttpGet]
         [Authorize]
         [Route("getInfor")]
-        public async Task<IActionResult> GetInfor([FromQuery]string id)
+        public async Task<IActionResult> GetInfor([FromQuery] string id)
         {
             var response = new AuthResponse();
-            if(id == null)
+            if (id == null)
             {
                 response.State = false;
                 response.Message = "Id must not null";
@@ -309,8 +276,8 @@ namespace HotelServer.Controllers
             response.Data = user;
             return Ok(response);
         }
-        
-        
+
+
         [HttpPut]
         [Authorize]
         [Route("updateInfor")]
@@ -327,7 +294,7 @@ namespace HotelServer.Controllers
             }
 
             //validate
-            if(request.Email == string.Empty)
+            if (request.Email == string.Empty)
             {
                 response.State = false;
                 response.Message = "missing fields required";
@@ -349,6 +316,39 @@ namespace HotelServer.Controllers
             response.State = true;
             response.Message = "Update information successful!";
             return Ok(response);
+        }
+
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[Route("verifi")]
+        //public async Task<IActionResult> VerifyAccount(VerifyAccountRequest request)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //}
+
+        private string GeneralToken(User user)
+        {
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
+
+            var authenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:IssuerSigningKey"]));
+
+            var token = new JwtSecurityToken(
+                    issuer: configuration["JWT:ValidIssuer"],
+                    audience: configuration["JWT:ValidAudience"],
+                    expires: DateTime.UtcNow.AddDays(1),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
     }

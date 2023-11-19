@@ -20,7 +20,6 @@ namespace HotelServer.Service
                 Port = 587,
                 EnableSsl = true,
                 Credentials = new NetworkCredential(mail, pw),
-                
             };
 
             return client.SendMailAsync(
