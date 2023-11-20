@@ -16,9 +16,9 @@ namespace HotelServer.Controllers
         public IActionResult GetAll();
         public IActionResult GetAllTypeHotel();
         public IActionResult GetDetail(string id);
-        public IActionResult AddHotel(Hotel hotel);
+        public IActionResult AddHotel(HotelRequest hotel);
         public IActionResult DeleteHotel(SingleIdRequest request);
-        public IActionResult UpdateHotel(Hotel hotel);
+        public IActionResult UpdateHotel(HotelRequest hotel);
     }
 
     [Route("[controller]")]
@@ -80,20 +80,27 @@ namespace HotelServer.Controllers
 
         [HttpPost("add")]
         [Authorize(Roles = "admin")]
-        public IActionResult AddHotel(Hotel hotel)
+        public IActionResult AddHotel(HotelRequest request)
         {
             var response = new AuthResponse();
+            var hotel = new Hotel();
             //generate ID
             var Id = SupportFunctions.GeneralId("H");
             hotel.Id = Id;
 
             //validate hotel
-            if(hotel.Name == null)
+            if(request.Name == null)
             {
                 response.State = false;
                 response.Message = "missing field required!";
                 return BadRequest(response);
             };
+
+            hotel.Name = request.Name;
+            hotel.Image = request.Image;
+            hotel.Location = request.Location;
+            hotel.TypeId = request.TypeId;
+            hotel.PayType = request.PayType;
 
             //add to Db
             _hotelService.Add(hotel);
@@ -131,20 +138,20 @@ namespace HotelServer.Controllers
 
         [HttpPut("update")]
         [Authorize(Roles = "admin")]
-        public IActionResult UpdateHotel(Hotel hotel)
+        public IActionResult UpdateHotel(HotelRequest request)
         {
             var response = new AuthResponse();
             //generate ID
 
             //validate hotel
-            if (hotel.Name == null)
+            if (request.Name == null)
             {
                 response.State = false;
                 response.Message = "missing field required!";
                 return BadRequest(response);
             };
 
-            var hotelDb = _hotelService.GetById(hotel.Id);
+            var hotelDb = _hotelService.GetById(request.Id);
             if (hotelDb == null)
             {
                 response.State = false;
@@ -152,8 +159,14 @@ namespace HotelServer.Controllers
                 return BadRequest(response);
             }
 
+            hotelDb.Name = request.Name;
+            hotelDb.Image = request.Image;
+            hotelDb.Location = request.Location;
+            hotelDb.TypeId = request.TypeId;
+            hotelDb.PayType = request.PayType;
+
             //add to Db
-            _hotelService.Update(hotel);
+            _hotelService.Update(hotelDb);
             _unitOfWork.Commit();
 
             response.State = true;

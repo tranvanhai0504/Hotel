@@ -14,15 +14,10 @@ namespace HotelServer.Controllers.request
     {
         //all
         public IActionResult GetBillDetail(String idBill);
-        public IActionResult AddBill(AddBillRequest request);
+        public Task<IActionResult> AddBill(AddBillRequest request);
         public IActionResult UpdateBill(AddBillRequest request);
-        public IActionResult CancelBill(String idBill);
-        public IActionResult FinishBill(String idBill);
-        //admin
-        public IActionResult DeleteBill(String idBill);
-        //user
-        
-        //public Task<IActionResult> GetBill
+        public IActionResult AcceptBill(String idBill);
+        public IActionResult DeleteBill(SingleIdRequest request);
     }
     [Route("[controller]")]
     [ApiController]
@@ -33,15 +28,16 @@ namespace HotelServer.Controllers.request
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRoomService _roomService;
         private readonly UserManager<User> _userManager;
+        private readonly IMailService _mailService;
 
-        public BillController(IBillService billService, IUnitOfWork unitOfWork, IRoomService roomService, UserManager<User> userManager)
+        public BillController(IBillService billService, IUnitOfWork unitOfWork, IRoomService roomService, UserManager<User> userManager, IMailService mailService)
         {
             _billService = billService;
             _unitOfWork = unitOfWork;
             _roomService = roomService;
             _userManager = userManager;
+            _mailService = mailService;
         }
-
 
         [HttpPost]
         [Authorize]
@@ -86,7 +82,7 @@ namespace HotelServer.Controllers.request
 
             Bill newBill = new Bill();
             newBill.Id = newId;
-            newBill.Status = true;
+            newBill.Status = false;
             newBill.UserId = request.UserId;
             newBill.RoomId = request.RoomId;
             newBill.Date = request.Date;
@@ -105,38 +101,8 @@ namespace HotelServer.Controllers.request
             return Ok(response);
         }
 
-        [HttpPut]
-        [Authorize]
-        [Route("cancel")]
-        public IActionResult CancelBill(SingleIdRequest request)
-        {
-            var response = new AuthResponse();
-            if(request.Id == "")
-            {
-                response.State=false;
-                response.Message = "Missing field required!";
-                return BadRequest(response);
-            }
-
-            var bill = _billService.GetById(request.Id);
-            if(bill == null)
-            {
-                response.State = false;
-                response.Message = "Bill doesn't exist!";
-                return BadRequest(response);
-            }
-
-            bill.Status = false;
-            _billService.Update(bill);
-            _unitOfWork.Commit();
-
-            response.State = true;
-            response.Message = "Update bill successful!";
-            return Ok(response);
-        }
-
         [HttpDelete]
-        [Authorize( Roles = "admin")]
+        [Authorize]
         [Route("delete")]
         public IActionResult DeleteBill(SingleIdRequest request)
         {
@@ -157,27 +123,56 @@ namespace HotelServer.Controllers.request
         }
 
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [Route("finish")]
-        public IActionResult FinishBill(string idBill)
+        public async Task<IActionResult> FinishBill(SingleIdRequest request)
         {
-            throw new NotImplementedException();
+            var response = new AuthResponse();
+            if(request.Id == "")
+            {
+                response.State = false;
+                response.Message = "Missing field requied!";
+                return BadRequest(response);
+            }
+
+            //get bill
+            var billInDb = _billService.GetById(request.Id);
+            if (billInDb == null)
+            {
+                response.State = false;
+                response.Message = "Bill doesn't exist!";
+                return BadRequest(response);
+            }
+
+            //get user
+            var user = await _userManager.FindByIdAsync(request.Id);
+
+            //send email
+            string content = $"<h3>Hóa đơn mã #{billInDb.Id} đã được xác nhận!</h3>";
+            await _mailService.SendEmailAsync(user.Email, "Xác nhận đặt phòng thành công!", content);
+
+            billInDb.Status = true;
+            _unitOfWork.Commit();
+
+            response.State = true;
+            response.Message = "Finish bill successful!";
+            return Ok(response) ;
         }
 
-        [HttpGet]
-        [Authorize]
-        [Route("")]
-        public IActionResult GetBillDetail(string idBill)
-        {
-            throw new NotImplementedException();
-        }
+        //[httpget]
+        //[authorize]
+        //[route("")]
+        //public iactionresult getbilldetail(string idbill)
+        //{
+        //    throw new notimplementedexception();
+        //}
 
-        [HttpPut]
-        [Authorize]
-        [Route("update")]
-        public IActionResult UpdateBill(AddBillRequest request)
-        {
-            throw new NotImplementedException();
-        }
+        //[httpput]
+        //[authorize]
+        //[route("update")]
+        //public iactionresult updatebill(addbillrequest request)
+        //{
+        //    throw new notimplementedexception();
+        //}
     }
 }
