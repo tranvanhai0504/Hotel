@@ -1,6 +1,8 @@
 using HotelServer;
 using Microsoft.EntityFrameworkCore;
 using HotelServer.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 
 internal class Program
 {
@@ -32,6 +34,22 @@ internal class Program
         {
             app.UseExceptionHandler("/Home/Error");
         }
+
+        //app.Use(async (ctx, next) =>
+        //{
+        //    ctx.Response.Headers["Access-Control-Allow-Origin"] = "*";
+        //    ctx.Response.Headers["Access-Control-Expose-Headers"] = "*";
+
+        //    if (HttpMethods.IsOptions(ctx.Request.Method))
+        //    {
+        //        ctx.Response.Headers["Access-Control-Allow-Headers"] = "*";
+        //        ctx.Response.Headers["Access-Control-Allow-Methods"] = "POST, GET, OPTION, PUT";
+        //        await ctx.Response.CompleteAsync();
+        //        return;
+        //    }
+
+        //    await next();
+        //});
 
         app.MapControllers();
 

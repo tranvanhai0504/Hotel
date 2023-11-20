@@ -86,6 +86,7 @@ namespace HotelServer.Controllers.request
 
             Bill newBill = new Bill();
             newBill.Id = newId;
+            newBill.Status = true;
             newBill.UserId = request.UserId;
             newBill.RoomId = request.RoomId;
             newBill.Date = request.Date;
@@ -107,17 +108,52 @@ namespace HotelServer.Controllers.request
         [HttpPut]
         [Authorize]
         [Route("cancel")]
-        public IActionResult CancelBill(string idBill)
+        public IActionResult CancelBill(SingleIdRequest request)
         {
-            throw new NotImplementedException();
+            var response = new AuthResponse();
+            if(request.Id == "")
+            {
+                response.State=false;
+                response.Message = "Missing field required!";
+                return BadRequest(response);
+            }
+
+            var bill = _billService.GetById(request.Id);
+            if(bill == null)
+            {
+                response.State = false;
+                response.Message = "Bill doesn't exist!";
+                return BadRequest(response);
+            }
+
+            bill.Status = false;
+            _billService.Update(bill);
+            _unitOfWork.Commit();
+
+            response.State = true;
+            response.Message = "Update bill successful!";
+            return Ok(response);
         }
 
         [HttpDelete]
         [Authorize( Roles = "admin")]
         [Route("delete")]
-        public IActionResult DeleteBill(string idBill)
+        public IActionResult DeleteBill(SingleIdRequest request)
         {
-            throw new NotImplementedException();
+            var response = new AuthResponse();
+            if(request.Id == "")
+            {
+                response.State = false;
+                response.Message = "Missing field required!";
+                return BadRequest(response) ;
+            }
+
+            _billService.Delete(request.Id);
+            _unitOfWork.Commit();
+
+            response.State = true;
+            response.Message = "Delete bill successful!";
+            return Ok(response);
         }
 
         [HttpPut]

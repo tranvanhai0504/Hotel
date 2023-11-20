@@ -21,11 +21,11 @@ namespace HotelServer
         public string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public void ConfigureServices(IServiceCollection services, string connectString)
         {
-            services.AddAuthorization(options =>
-{
-                options.AddPolicy("AdminOnly",
-                    policy => policy.RequireClaim("Admin"));
-            });
+//            services.AddAuthorization(options =>
+//{
+//                options.AddPolicy("role",
+//                    policy => policy.RequireClaim("admin"));
+//            });
 
             //services.AddDbContext<HotelDbContext>(options => options.UseSqlServer(connectString));
 
@@ -83,29 +83,33 @@ namespace HotelServer
             }).AddJwtBearer(options =>
             {
                 options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
+                options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = new
                 Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    //ValidAudience = builder.Configuration["JWT:ValidAudience"],
-                    //ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["jwt:validaudience"],
+                    ValidIssuer = builder.Configuration["jwt:validissuer"],
+                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:IssuerSigningKey"]))
                 };
             });
+
+
         }
 
         public void Configure(IApplicationBuilder app)
         {
 
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors(MyAllowSpecificOrigins);
+
+
         }
 
     }
