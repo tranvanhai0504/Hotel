@@ -175,7 +175,7 @@ namespace HotelServer.Controllers
             {
                 response.State = false;
                 response.Message = "A error have occured";
-                return BadRequest(response);
+                return Ok(response);
             }
 
             //check email is exist
@@ -184,7 +184,7 @@ namespace HotelServer.Controllers
             {
                 response.State = false;
                 response.Message = "Email does not exist!";
-                return BadRequest(response);
+                return Ok(response);
             }
 
             //token
@@ -318,16 +318,85 @@ namespace HotelServer.Controllers
             return Ok(response);
         }
 
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[Route("verifi")]
-        //public async Task<IActionResult> VerifyAccount(VerifyAccountRequest request)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-        //}
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("verifi")]
+        public async Task<IActionResult> VerifyAccount(VerifyAccountRequest request)
+        {
+            var response = new AuthResponse { State = false };
+            if (!ModelState.IsValid)
+            {
+                response.State = false;
+                response.Message = "An error have ocurrur";
+                return Ok(response);
+            }
+
+            //check email is exist
+            var managedUser = await _userManager.FindByEmailAsync(request.Email);
+            if (managedUser == null)
+            {
+                response.State = false;
+                response.Message = "Email does not exist!";
+                return Ok(response);
+            }
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(managedUser);
+            var encodedToken = Encoding.UTF8.GetBytes(token);
+            var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+
+            string url = $"http://localhost:7211/Account/ConfirmEmail?email={managedUser.Email}&token={validToken}";
+
+            //sending email
+            await _mailService.SendEmailAsync(managedUser.Email, "Confirm email", "<h1>Follow the instructions to confirm your email</h1>"
+                + $"<p> To confirm email: <a href='{url}'>Click here</a></p>");
+
+            response.State = true;
+            response.Message = "The email for confirm account has been sent!";
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string email, string token)
+        {
+            var response = new AuthResponse();
+
+            if (!ModelState.IsValid)
+            {
+                response.State = false;
+                response.Message = "A error has occurred!";
+                return BadRequest(response);
+            }
+
+            //check email is exist
+            var managedUser = await _userManager.FindByEmailAsync(email);
+            if (managedUser == null)
+            {
+                response.State = false;
+                response.Message = "Email does not exist!";
+                return BadRequest(response);
+            }
+
+            var decodeToken = WebEncoders.Base64UrlDecode(token);
+            string normalToken = Encoding.UTF8.GetString(decodeToken);
+
+            var result = await _userManager.ConfirmEmailAsync(managedUser, normalToken);
+            if (result.Succeeded)
+            {
+                response.State = true;
+                response.Message = "Confirm account successful!";
+            }
+            else
+            {
+                response.State = false;
+                response.Message = "Confirm account failure!";
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
 
         private string GeneralToken(User user)
         {

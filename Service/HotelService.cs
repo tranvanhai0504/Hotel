@@ -1,6 +1,7 @@
 ﻿using HotelServer.Data.Infrastructure;
 using HotelServer.Data.Respositories;
 using HotelServer.Model;
+using System.Linq.Expressions;
 using static HotelServer.Data.Respositories.HotelRepository;
 
 namespace HotelServer.Service
@@ -16,6 +17,7 @@ namespace HotelServer.Service
         IEnumerable<TypeHotel> GetTypes();
         void SaveChanges();
         IEnumerable<Room> GetAllRooms(string hotelId);
+        IEnumerable<Hotel> GetAllByFilter(Expression<Func<Hotel, bool>> predicate);
         
     }
     public class HotelService : IHotelService
@@ -53,6 +55,12 @@ namespace HotelServer.Service
             return _hotelRepository.GetAll(new string[] {"Hotels"});
         }
 
+        public IEnumerable<Hotel> GetAllByFilter(Expression<Func<Hotel, bool>> predicate)
+        {
+            var hotels = _hotelRepository.GetMulti(predicate);
+            return hotels;
+        }
+
         public IEnumerable<Room> GetAllRooms(string hotelId)
         {
             return _hotelRepository.GetAllRooms(hotelId);
@@ -65,7 +73,12 @@ namespace HotelServer.Service
 
         public IEnumerable<TypeHotel> GetTypes()
         {
-            return _hotelRepository.GetTypes();
+            var types = _hotelRepository.GetTypes();
+            foreach (var type in types)
+            {
+                type.Hotels = null;
+            }
+            return types;
         }
 
         public void SaveChanges()

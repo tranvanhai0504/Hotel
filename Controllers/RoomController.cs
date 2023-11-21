@@ -14,9 +14,10 @@ namespace HotelServer.Controllers
         public IActionResult GetAllRoom();
         public IActionResult GetRoomDetail(string id);
         public IActionResult GetAllTypeRoom();
-        public IActionResult AddRoom(Room room);
+        public IActionResult AddRoom(RoomRequest request);
         public IActionResult DeleteRoom(SingleIdRequest request);
-        public IActionResult UpdateRoom(Room room);
+        public IActionResult UpdateRoom(RoomRequest request);
+        public IActionResult Search(RoomSearchRequest request);
     }
     [Route("[controller]")]
     [ApiController]
@@ -35,15 +36,24 @@ namespace HotelServer.Controllers
 
         [HttpPost("add")]
         [Authorize(Roles = "admin")]
-        public IActionResult AddRoom(Room room)
+        public IActionResult AddRoom(RoomRequest request)
         {
+            var newRoom = new Room();
             var response = new AuthResponse();
             //generate ID
             var Id = SupportFunctions.GeneralId("R");
-            room.Id = Id;
+            newRoom.Id = Id;
+
+            newRoom.QuantityId = request.QuantityId;
+            newRoom.Status = true;
+            newRoom.Amount = request.Amount;
+            newRoom.Image = request.Image;
+            newRoom.Bed = request.Bed;
+            newRoom.HotelId = request.HotelId;
+            newRoom.Price = request.Price;
 
             //add to Db
-            _roomService.Add(room);
+            _roomService.Add(newRoom);
             _unitOfWork.Commit();
 
             response.State = true;
@@ -88,7 +98,12 @@ namespace HotelServer.Controllers
         [Authorize()]
         public IActionResult GetAllTypeRoom()
         {
+            var response = new AuthResponse();
+
             var typeRoom = _roomService.GetTypeRooms();
+            response.State = true;
+            response.Message = "Get all type of room success!";
+            response.Data = typeRoom;
             return Ok(typeRoom);
         }
 
@@ -125,31 +140,58 @@ namespace HotelServer.Controllers
             return Ok(response);
         }
 
+        [HttpGet("search")]
+        [Authorize]
+        public IActionResult Search(RoomSearchRequest request)
+        {
+            var hotelsInLocation = _hotelService.GetAllByFilter(hotel => hotel.Location.ToLower() ==  request.Location.ToLower());
+            foreach(var hotel in hotelsInLocation)
+            {
+                var rooms = _roomService.GetRoomByFilter(room => room.HotelId == hotel.Id && room.Amount >= request.AmountRoom);
+                hotel.Rooms = rooms;
+            }
+
+            var response = new AuthResponse();
+            response.State = true;
+            response.Message = "Successful!";
+            response.Data = hotelsInLocation;
+            return Ok(response);
+        }
+
         [HttpPut("update")]
         [Authorize(Roles = "admin")]
-        public IActionResult UpdateRoom(Room room)
+        public IActionResult UpdateRoom(RoomRequest request)
         {
             var response = new AuthResponse();
             //generate ID
 
             //validate hotel
-            if (room.Amount == null)
+            if (request.Amount == null)
             {
                 response.State = false;
                 response.Message = "missing field required!";
                 return BadRequest(response);
             };
 
-            var hotelDb = _roomService.GetById(room.Id);
-            if (hotelDb == null)
+            var roomDb = _roomService.GetById(request.Id);
+            if (roomDb == null)
             {
                 response.State = false;
                 response.Message = "Room does not exist!";
                 return BadRequest(response);
             }
 
+            //update
+            roomDb.QuantityId = request.QuantityId;
+            roomDb.Status = true;
+            roomDb.Amount = request.Amount;
+            roomDb.Image = request.Image;
+            roomDb.Bed = request.Bed;
+            roomDb.HotelId = request.HotelId;
+            roomDb.Price = request.Price;
+
             //add to Db
-            _roomService.Update(room);
+            _roomService.Update(roomDb);
             _unitOfWork.Commit();
 
             response.State = true;

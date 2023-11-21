@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Configuration;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -21,13 +22,6 @@ namespace HotelServer
         public string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public void ConfigureServices(IServiceCollection services, string connectString)
         {
-//            services.AddAuthorization(options =>
-//{
-//                options.AddPolicy("role",
-//                    policy => policy.RequireClaim("admin"));
-//            });
-
-            //services.AddDbContext<HotelDbContext>(options => options.UseSqlServer(connectString));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -39,6 +33,9 @@ namespace HotelServer
             //bill
             services.AddSingleton<IBillRepository, BillRepository>();
             services.AddSingleton<IBillService, BillService>();
+            //room
+            services.AddSingleton<IRoomRepository, RoomRepository>();
+            services.AddSingleton<IRoomService, RoomService>();
 
             services.AddTransient<IMailService, MailService>();
 
@@ -70,6 +67,34 @@ namespace HotelServer
                                   {
                                       policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                                   });
+            });
+
+            services.AddSwaggerGen(option =>
+            {
+                option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+                option.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
             });
         }  
 

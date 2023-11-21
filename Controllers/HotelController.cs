@@ -77,7 +77,6 @@ namespace HotelServer.Controllers
             return Ok(response);
         }
 
-
         [HttpPost("add")]
         [Authorize(Roles = "admin")]
         public IActionResult AddHotel(HotelRequest request)
