@@ -13,8 +13,8 @@ namespace HotelServer.Model
         [Required]
         public string Bed { get; set; }
         [Required]
-        public string QuantityId { get; set; }
-        [ForeignKey("QuantityId")]
+        public string TypeRoomId { get; set; }
+        [ForeignKey("TypeRoomId")]
         public TypeRoom TypeRoom { get; set; }
         [Required]
         public double Price { get; set; }

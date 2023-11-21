@@ -4,6 +4,7 @@ using HotelServer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelServer.Migrations
 {
     [DbContext(typeof(HotelDbContext))]
-    partial class HotelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231121160505_fixDb04")]
+    partial class fixDb04
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,21 +129,21 @@ namespace HotelServer.Migrations
                     b.Property<double?>("PriceDiscount")
                         .HasColumnType("float");
 
+                    b.Property<string>("QuantityId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Services")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<string>("TypeRoomId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("HotelId");
 
-                    b.HasIndex("TypeRoomId");
+                    b.HasIndex("QuantityId");
 
                     b.ToTable("Room");
                 });
@@ -422,7 +425,7 @@ namespace HotelServer.Migrations
 
                     b.HasOne("HotelServer.Model.TypeRoom", "TypeRoom")
                         .WithMany("Rooms")
-                        .HasForeignKey("TypeRoomId")
+                        .HasForeignKey("QuantityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

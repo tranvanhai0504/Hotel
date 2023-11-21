@@ -164,6 +164,7 @@ namespace HotelServer.Controllers
             hotelDb.Location = request.Location;
             hotelDb.TypeId = request.TypeId;
             hotelDb.PayType = request.PayType;
+            hotelDb.Services = request.Service;
 
             //add to Db
             _hotelService.Update(hotelDb);

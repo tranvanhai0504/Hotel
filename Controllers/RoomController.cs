@@ -44,7 +44,7 @@ namespace HotelServer.Controllers
             var Id = SupportFunctions.GeneralId("R");
             newRoom.Id = Id;
 
-            newRoom.QuantityId = request.QuantityId;
+            newRoom.TypeRoomId = request.TypeRoomId;
             newRoom.Status = true;
             newRoom.Amount = request.Amount;
             newRoom.Image = request.Image;
@@ -131,7 +131,7 @@ namespace HotelServer.Controllers
             roomdb.Hotel = hotelOfRoom;
 
             //get type
-            var roomType = _roomService.GetTypeOfRoom(roomdb.QuantityId);
+            var roomType = _roomService.GetTypeOfRoom(roomdb.TypeRoomId);
             roomdb.TypeRoom = roomType;
 
             response.State = true;
@@ -182,7 +182,7 @@ namespace HotelServer.Controllers
             }
 
             //update
-            roomDb.QuantityId = request.QuantityId;
+            roomDb.TypeRoomId = request.TypeRoomId;
             roomDb.Status = true;
             roomDb.Amount = request.Amount;
             roomDb.Image = request.Image;
