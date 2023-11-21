@@ -4,6 +4,7 @@ using HotelServer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelServer.Migrations
 {
     [DbContext(typeof(HotelDbContext))]
-    partial class HotelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231121065253_addServiceToRoom")]
+    partial class addServiceToRoom
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,6 +87,7 @@ namespace HotelServer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Services")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Status")
@@ -94,6 +98,7 @@ namespace HotelServer.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Utilities")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -121,12 +126,10 @@ namespace HotelServer.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Image")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("PriceDiscount")
                         .HasColumnType("float");
 
                     b.Property<string>("QuantityId")
@@ -134,6 +137,7 @@ namespace HotelServer.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Services")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Status")

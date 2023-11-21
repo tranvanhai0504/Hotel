@@ -277,7 +277,6 @@ namespace HotelServer.Controllers
             return Ok(response);
         }
 
-
         [HttpPut]
         [Authorize]
         [Route("updateInfor")]
@@ -397,6 +396,7 @@ namespace HotelServer.Controllers
 
             return Ok(response);
         }
+
 
         private string GeneralToken(User user)
         {

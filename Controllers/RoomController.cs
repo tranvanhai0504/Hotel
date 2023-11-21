@@ -189,6 +189,7 @@ namespace HotelServer.Controllers
             roomDb.Bed = request.Bed;
             roomDb.HotelId = request.HotelId;
             roomDb.Price = request.Price;
+            roomDb.Services = request.Services;
 
             //add to Db
             _roomService.Update(roomDb);
@@ -197,6 +198,20 @@ namespace HotelServer.Controllers
             response.State = true;
             response.Message = "update room successful!";
 
+            return Ok(response);
+        }
+
+        [HttpGet("getByHotelId")]
+        [Authorize]
+        public IActionResult GetRoomsByHotelId(string id)
+        {
+            var response = new AuthResponse();
+
+            var rooms = _hotelService.GetAllRooms(id);
+
+            response.State = true;
+            response.Message = "Get all rooms successful!";
+            response.Data = rooms;
             return Ok(response);
         }
     }

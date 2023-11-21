@@ -24,6 +24,8 @@ namespace HotelServer.Model
         public Hotel Hotel { get; set; }
         [Required]
         public int Amount { get; set; }
-        public string Image { get; set; }
+        public string? Image { get; set; }
+        public string? Services { get; set; }
+        public double? PriceDiscount { get; set; } = null;
     }
 }

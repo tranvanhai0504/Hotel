@@ -9,5 +9,6 @@
         public int Amount { get; set; }
         public string Image { get; set; }
         public string HotelId { get; set; }
+        public string Services { get; set; }
     }
 }
