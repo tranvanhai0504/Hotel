@@ -68,8 +68,8 @@ namespace HotelServer.Controllers
                 return BadRequest(response);
             }
 
-            var roomOfHotel = await _hotelService.GetAllRooms(hoteldb.Id);
-            hoteldb.Rooms = roomOfHotel;
+            //var roomOfHotel = await _hotelService.GetAllRooms(hoteldb.Id);
+            //hoteldb.Rooms = roomOfHotel;
 
             response.State = true;
             response.Message = "Success";
@@ -105,6 +105,7 @@ namespace HotelServer.Controllers
 
             //add to Db
             _hotelService.Add(hotel);
+            _hotelService.SaveChanges();
 
             response.State = true;
             response.Message = "Add new hotel successful!";
@@ -128,7 +129,8 @@ namespace HotelServer.Controllers
 
             //delete to Db
             _hotelService.Delete(request.Id);
-            _unitOfWork.Commit();
+            _hotelService.SaveChanges();
+
 
             response.State = true;
             response.Message = "Delete new hotel successful!";
@@ -168,7 +170,8 @@ namespace HotelServer.Controllers
 
             //add to Db
             _hotelService.Update(hotelDb);
-            _unitOfWork.Commit();
+            _hotelService.SaveChanges();
+
 
             response.State = true;
             response.Message = "update hotel successful!";

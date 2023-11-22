@@ -12,7 +12,7 @@
 
         public HotelDbContext DbContext
         {
-            get { return dbContext ?? (dbContext = dbFactory.Init()); }
+            get { return dbFactory.Init(); }
         }
 
         public void Commit() { 

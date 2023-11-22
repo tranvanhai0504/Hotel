@@ -56,7 +56,7 @@ namespace HotelServer.Controllers
 
             //add to Db
             _roomService.Add(newRoom);
-            _unitOfWork.Commit();
+            _roomService.SaveChanges();
 
             response.State = true;
             response.Message = "Add new room successful!";
@@ -80,7 +80,7 @@ namespace HotelServer.Controllers
 
             //delete to Db
             _roomService.Delete(request.Id);
-            _unitOfWork.Commit();
+            _roomService.SaveChanges();
 
             response.State = true;
             response.Message = "Delete room successful!";
@@ -147,7 +147,7 @@ namespace HotelServer.Controllers
         [Authorize]
         public IActionResult Search(string location, int amountRoom)
         {
-            var hotelsInLocation = _hotelService.GetAllByFilter(hotel => hotel.Location.ToLower() == location.ToLower());
+            var hotelsInLocation = _hotelService.GetAllByFilter(hotel => hotel.Location.ToLower().Contains(location.ToLower()));
             foreach(var hotel in hotelsInLocation)
             {
                 var rooms = _roomService.GetRoomByFilter(room => room.HotelId == hotel.Id && room.Amount >= amountRoom);
@@ -196,7 +196,7 @@ namespace HotelServer.Controllers
 
             //add to Db
             _roomService.Update(roomDb);
-            _unitOfWork.Commit();
+            _roomService.SaveChanges();
 
             response.State = true;
             response.Message = "update room successful!";

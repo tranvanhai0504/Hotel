@@ -29,9 +29,9 @@ namespace HotelServer.Data.Infrastructure
         }
 
         #region Implementation
-        public virtual void Add(T entity)
+        public virtual async Task Add(T entity)
         {
-            dbSet.Add(entity);
+            await dbSet.AddAsync(entity);
         }
 
         public virtual void Update(T entity)
@@ -76,7 +76,6 @@ namespace HotelServer.Data.Infrastructure
                 {
                     query = query.Include(include);
                 }
-
             }
             return _context.Set<T>().AsQueryable();
         }

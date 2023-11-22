@@ -17,6 +17,8 @@ namespace HotelServer.Service
         Task<IEnumerable<TypeRoom>> GetTypeRooms();
         TypeRoom GetTypeOfRoom(string idType);
         IEnumerable<Room> GetRoomByFilter(Expression<Func<Room, bool>> predicate);
+        void SaveChanges();
+
     } 
     public class RoomService : IRoomService
     {
@@ -55,21 +57,21 @@ namespace HotelServer.Service
 
         public IEnumerable<Room> GetAll()
         {
-            var rooms = _roomsRepository.GetAll(new string[] { "Rooms" });
-            foreach (var room in rooms)
-            {
-                room.Hotel = null;
-            }
+            var rooms = _roomsRepository.GetAll(new string[] { "Rooms" }).ToList();
+            //foreach (var room in rooms)
+            //{
+            //    room.Hotel = null;
+            //}
             return rooms;
         }
 
         public async Task<IEnumerable<TypeRoom>> GetTypeRooms()
         {
             var types = await _roomsRepository.GetTypeRooms();
-            foreach (var type in types)
-            {
-                type.Rooms = null;
-            }
+            //foreach (var type in types)
+            //{
+            //    type.Rooms = null;
+            //}
             return types;
         }
 
@@ -93,6 +95,11 @@ namespace HotelServer.Service
         {
             var roomFilter = _roomsRepository.GetMulti(predicate).ToList();
             return roomFilter;
+        }
+
+        public void SaveChanges()
+        {
+            _unitOfWork.Commit();
         }
     }
 }

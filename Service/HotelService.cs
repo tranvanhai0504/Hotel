@@ -34,20 +34,17 @@ namespace HotelServer.Service
         public void Add(Hotel hotel)
         {
             _hotelRepository.Add(hotel);
-            SaveChanges();
         }
 
         public void ChangeImage(string imageURL, string id)
         {
             Hotel hotel = GetById(id);
             _hotelRepository.Update(hotel);
-            SaveChanges();
         }
 
         public void Delete(string id)
         {
             _hotelRepository.Delete(GetById(id));
-            SaveChanges();
         }
 
         public IEnumerable<Hotel> GetAll()
@@ -74,10 +71,10 @@ namespace HotelServer.Service
         public async Task<IEnumerable<TypeHotel>> GetTypes()
         {
             var types = await _hotelRepository.GetTypes();
-            foreach (var type in types)
-            {
-                type.Hotels = null;
-            }
+            //foreach (var type in types)
+            //{
+            //    type.Hotels = null;
+            //}
             return types;
         }
 
@@ -89,7 +86,6 @@ namespace HotelServer.Service
         public void Update(Hotel hotel)
         {
             _hotelRepository.Update(hotel);
-            SaveChanges();
         }
     }
 }

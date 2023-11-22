@@ -26,6 +26,13 @@ namespace HotelServer.Data
             }
         }
 
-        public HotelDbContext() { }
+        public HotelDbContext(DbContextOptions<HotelDbContext> options) : base(options)
+        {
+
+        }
+
+        public HotelDbContext()
+        {
+        }
     }
 }
