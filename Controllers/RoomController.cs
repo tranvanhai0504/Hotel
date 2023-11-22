@@ -51,6 +51,8 @@ namespace HotelServer.Controllers
             newRoom.Bed = request.Bed;
             newRoom.HotelId = request.HotelId;
             newRoom.Price = request.Price;
+            newRoom.Services = request.Services;
+            newRoom.PriceDiscount = request.PriceDiscount;
 
             //add to Db
             _roomService.Add(newRoom);
@@ -207,7 +209,7 @@ namespace HotelServer.Controllers
         {
             var response = new AuthResponse();
 
-            var rooms = _hotelService.GetAllRooms(id);
+            var rooms = _roomService.GetRoomByFilter(room => room.HotelId == id);
 
             response.State = true;
             response.Message = "Get all rooms successful!";

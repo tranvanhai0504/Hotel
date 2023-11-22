@@ -10,5 +10,6 @@
         public string Image { get; set; }
         public string HotelId { get; set; }
         public string Services { get; set; }
+        public double PriceDiscount { get; set; }
     }
 }

@@ -101,6 +101,7 @@ namespace HotelServer.Controllers
             hotel.TypeId = request.TypeId;
             hotel.PayType = request.PayType;
             hotel.Services = request.Service;
+            hotel.Address = request.Address;
 
             //add to Db
             _hotelService.Add(hotel);

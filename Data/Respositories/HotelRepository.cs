@@ -20,7 +20,8 @@ namespace HotelServer.Data.Respositories
 
         public IEnumerable<Room> GetAllRooms(string id)
         {
-            return DbContext.Rooms.Where(room => room.HotelId == id).ToList();
+            var rooms = DbContext.Rooms.Where(room => room.HotelId == id).ToList();
+            return rooms;
         }
 
         public IEnumerable<TypeHotel> GetTypes()

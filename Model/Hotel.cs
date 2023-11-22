@@ -25,6 +25,7 @@ namespace HotelServer.Model
         public string Image { get; set; }
         public IEnumerable<Room> Rooms { get; set; }
         public string? Services { get; set; }
+        public string Address { get; set; }
     }
 }
  

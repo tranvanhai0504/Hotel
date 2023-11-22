@@ -9,6 +9,7 @@
         public string PayType { get; set; }
         public string Image { get; set; }
         public string Service { get; set; }
+        public string Address { get; set; }
 
     }
 }

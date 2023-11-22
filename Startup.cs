@@ -25,6 +25,7 @@ namespace HotelServer
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            services.AddSingleton<HotelDbContext>();
             services.AddSingleton<IDbFactory, DbFactory>();
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
             //hotel
@@ -46,7 +47,6 @@ namespace HotelServer
             services.AddControllers().AddJsonOptions(x =>
                         x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-            services.AddDbContext<HotelDbContext>();
             services.AddIdentityCore<User>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = true;
