@@ -55,7 +55,12 @@ namespace HotelServer.Service
 
         public IEnumerable<Room> GetAll()
         {
-            return _roomsRepository.GetAll(new string[] {"Rooms"});
+            var rooms = _roomsRepository.GetAll(new string[] { "Rooms" });
+            foreach (var room in rooms)
+            {
+                room.Hotel = null;
+            }
+            return rooms;
         }
 
         public IEnumerable<TypeRoom> GetTypeRooms()
@@ -65,7 +70,7 @@ namespace HotelServer.Service
             {
                 type.Rooms = null;
             }
-            return _roomsRepository.GetTypeRooms();
+            return types;
         }
 
         public Room GetById(string id)
@@ -86,7 +91,7 @@ namespace HotelServer.Service
 
         public IEnumerable<Room> GetRoomByFilter(Expression<Func<Room, bool>> predicate)
         {
-            var roomFilter = _roomsRepository.GetMulti(predicate);
+            var roomFilter = _roomsRepository.GetMulti(predicate).ToList();
             return roomFilter;
         }
     }

@@ -17,7 +17,7 @@ namespace HotelServer.Controllers
         public IActionResult AddRoom(RoomRequest request);
         public IActionResult DeleteRoom(SingleIdRequest request);
         public IActionResult UpdateRoom(RoomRequest request);
-        public IActionResult Search(RoomSearchRequest request);
+        public IActionResult Search(string location, int amountRoom);
     }
     [Route("[controller]")]
     [ApiController]
@@ -130,6 +130,7 @@ namespace HotelServer.Controllers
 
             //get hotel
             var hotelOfRoom = _hotelService.GetById(roomdb.HotelId);
+            hotelOfRoom.Rooms = null;
             roomdb.Hotel = hotelOfRoom;
 
             //get type
@@ -144,12 +145,12 @@ namespace HotelServer.Controllers
 
         [HttpGet("search")]
         [Authorize]
-        public IActionResult Search(RoomSearchRequest request)
+        public IActionResult Search(string location, int amountRoom)
         {
-            var hotelsInLocation = _hotelService.GetAllByFilter(hotel => hotel.Location.ToLower() ==  request.Location.ToLower());
+            var hotelsInLocation = _hotelService.GetAllByFilter(hotel => hotel.Location.ToLower() == location.ToLower());
             foreach(var hotel in hotelsInLocation)
             {
-                var rooms = _roomService.GetRoomByFilter(room => room.HotelId == hotel.Id && room.Amount >= request.AmountRoom);
+                var rooms = _roomService.GetRoomByFilter(room => room.HotelId == hotel.Id && room.Amount >= amountRoom);
                 hotel.Rooms = rooms;
             }
 

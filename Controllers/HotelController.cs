@@ -15,7 +15,7 @@ namespace HotelServer.Controllers
     {
         public IActionResult GetAll();
         public IActionResult GetAllTypeHotel();
-        public IActionResult GetDetail(string id);
+        public Task<IActionResult> GetDetail(string id);
         public IActionResult AddHotel(HotelRequest hotel);
         public IActionResult DeleteHotel(SingleIdRequest request);
         public IActionResult UpdateHotel(HotelRequest hotel);
@@ -51,7 +51,7 @@ namespace HotelServer.Controllers
 
         [HttpGet("getDetail")]
         [Authorize]
-        public IActionResult GetDetail(string id) {
+        public async Task<IActionResult> GetDetail(string id) {
 
             var response = new AuthResponse();
             if(id == null)
@@ -68,7 +68,7 @@ namespace HotelServer.Controllers
                 return BadRequest(response);
             }
 
-            var roomOfHotel = _hotelService.GetAllRooms(hoteldb.Id);
+            var roomOfHotel = await _hotelService.GetAllRooms(hoteldb.Id);
             hoteldb.Rooms = roomOfHotel;
 
             response.State = true;

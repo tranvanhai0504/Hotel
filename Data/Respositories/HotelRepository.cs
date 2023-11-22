@@ -2,13 +2,14 @@
 using HotelServer.Model;
 using HotelServer.Data.Infrastructure;
 using System.Dynamic;
+using System.Data.Entity;
 
 namespace HotelServer.Data.Respositories
 {
     public interface IHotelRepository : IRepository<Hotel>
     {
         IEnumerable<TypeHotel> GetTypes();
-        IEnumerable<Room> GetAllRooms(string id);
+        Task<IEnumerable<Room>> GetAllRooms(string id);
     }
     public class HotelRepository : RepositoryBase<Hotel>, IHotelRepository
     {
@@ -18,9 +19,9 @@ namespace HotelServer.Data.Respositories
 
         }
 
-        public IEnumerable<Room> GetAllRooms(string id)
+        public async Task<IEnumerable<Room>> GetAllRooms(string id)
         {
-            var rooms = DbContext.Rooms.Where(room => room.HotelId == id).ToList();
+            var rooms = await DbContext.Rooms.Where(room => room.HotelId == id).ToListAsync();
             return rooms;
         }
 
