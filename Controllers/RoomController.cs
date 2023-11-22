@@ -13,7 +13,7 @@ namespace HotelServer.Controllers
     {
         public IActionResult GetAllRoom();
         public IActionResult GetRoomDetail(string id);
-        public IActionResult GetAllTypeRoom();
+        public Task<IActionResult> GetAllTypeRoom();
         public IActionResult AddRoom(RoomRequest request);
         public IActionResult DeleteRoom(SingleIdRequest request);
         public IActionResult UpdateRoom(RoomRequest request);
@@ -98,11 +98,11 @@ namespace HotelServer.Controllers
 
         [HttpGet("getAllType")]
         [Authorize()]
-        public IActionResult GetAllTypeRoom()
+        public async Task<IActionResult> GetAllTypeRoom()
         {
             var response = new AuthResponse();
 
-            var typeRoom = _roomService.GetTypeRooms();
+            var typeRoom = await _roomService.GetTypeRooms();
             response.State = true;
             response.Message = "Get all type of room success!";
             response.Data = typeRoom;

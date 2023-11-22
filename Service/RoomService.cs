@@ -14,7 +14,7 @@ namespace HotelServer.Service
         IEnumerable<Room> GetAll();
         void ChangeAmount(string id,  int amount);
         void ChangeImage(string id, string image);
-        IEnumerable<TypeRoom> GetTypeRooms();
+        Task<IEnumerable<TypeRoom>> GetTypeRooms();
         TypeRoom GetTypeOfRoom(string idType);
         IEnumerable<Room> GetRoomByFilter(Expression<Func<Room, bool>> predicate);
     } 
@@ -63,9 +63,9 @@ namespace HotelServer.Service
             return rooms;
         }
 
-        public IEnumerable<TypeRoom> GetTypeRooms()
+        public async Task<IEnumerable<TypeRoom>> GetTypeRooms()
         {
-            var types = _roomsRepository.GetTypeRooms();
+            var types = await _roomsRepository.GetTypeRooms();
             foreach (var type in types)
             {
                 type.Rooms = null;

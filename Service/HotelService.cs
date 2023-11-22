@@ -14,7 +14,7 @@ namespace HotelServer.Service
         Hotel GetById(string id);
         IEnumerable<Hotel> GetAll();
         void ChangeImage(string imageURL, string id);
-        IEnumerable<TypeHotel> GetTypes();
+        Task<IEnumerable<TypeHotel>> GetTypes();
         void SaveChanges();
         Task<IEnumerable<Room>> GetAllRooms(string hotelId);
         IEnumerable<Hotel> GetAllByFilter(Expression<Func<Hotel, bool>> predicate);
@@ -71,9 +71,9 @@ namespace HotelServer.Service
             return _hotelRepository.GetSingleById(id);
         }
 
-        public IEnumerable<TypeHotel> GetTypes()
+        public async Task<IEnumerable<TypeHotel>> GetTypes()
         {
-            var types = _hotelRepository.GetTypes();
+            var types = await _hotelRepository.GetTypes();
             foreach (var type in types)
             {
                 type.Hotels = null;

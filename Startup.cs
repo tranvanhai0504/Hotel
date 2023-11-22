@@ -25,7 +25,7 @@ namespace HotelServer
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddSingleton<HotelDbContext>();
+            services.AddDbContext<HotelDbContext>(ServiceLifetime.Transient);
             services.AddSingleton<IDbFactory, DbFactory>();
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
             //hotel

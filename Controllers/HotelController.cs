@@ -14,7 +14,7 @@ namespace HotelServer.Controllers
     public interface IHotelController
     {
         public IActionResult GetAll();
-        public IActionResult GetAllTypeHotel();
+        public Task<IActionResult> GetAllTypeHotel();
         public Task<IActionResult> GetDetail(string id);
         public IActionResult AddHotel(HotelRequest hotel);
         public IActionResult DeleteHotel(SingleIdRequest request);
@@ -44,8 +44,8 @@ namespace HotelServer.Controllers
 
         [HttpGet("getType")]
         [Authorize]
-        public IActionResult GetAllTypeHotel() {
-            var typesHotel = _hotelService.GetTypes();
+        public async Task<IActionResult> GetAllTypeHotel() {
+            var typesHotel = await _hotelService.GetTypes();
             return Ok(typesHotel);
         }
 
@@ -105,7 +105,6 @@ namespace HotelServer.Controllers
 
             //add to Db
             _hotelService.Add(hotel);
-            _unitOfWork.Commit();
 
             response.State = true;
             response.Message = "Add new hotel successful!";

@@ -1,11 +1,12 @@
 ﻿using HotelServer.Data.Infrastructure;
 using HotelServer.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelServer.Data.Respositories
 {
     public interface IRoomRepository : IRepository<Room>
     {
-        IEnumerable<TypeRoom> GetTypeRooms();
+        Task<IEnumerable<TypeRoom>> GetTypeRooms();
         TypeRoom GetTypeOfRoom(string idType);
     }
     public class RoomRepository : RepositoryBase<Room>, IRoomRepository
@@ -21,9 +22,9 @@ namespace HotelServer.Data.Respositories
             return typeRoom;
         }
 
-        public IEnumerable<TypeRoom> GetTypeRooms()
+        public async Task<IEnumerable<TypeRoom>> GetTypeRooms()
         {
-            var typeRoom = DbContext.TypeRoom.ToList();
+            var typeRoom = await DbContext.TypeRoom.ToListAsync();
             return typeRoom;
         }
     }

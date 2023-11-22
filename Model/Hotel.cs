@@ -17,8 +17,8 @@ namespace HotelServer.Model
         [Required]
         public string TypeId { get; set; }
 
-        [Required]
         [ForeignKey("TypeId")]
+        [Required]
         public TypeHotel TypeHotel { get; set; }
         public string PayType { get; set; }
         [Required]
