@@ -49,7 +49,7 @@ namespace HotelServer.Service
 
         public IEnumerable<Hotel> GetAll()
         {
-            return _hotelRepository.GetAll(new string[] {"Hotels"});
+            return _hotelRepository.GetAll();
         }
 
         public IEnumerable<Hotel> GetAllByFilter(Expression<Func<Hotel, bool>> predicate)

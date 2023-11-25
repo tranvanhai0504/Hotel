@@ -193,6 +193,7 @@ namespace HotelServer.Controllers
             roomDb.HotelId = request.HotelId;
             roomDb.Price = request.Price;
             roomDb.Services = request.Services;
+            roomDb.PriceDiscount = request.PriceDiscount;
 
             //add to Db
             _roomService.Update(roomDb);

@@ -57,7 +57,7 @@ namespace HotelServer.Service
 
         public IEnumerable<Room> GetAll()
         {
-            var rooms = _roomsRepository.GetAll(new string[] { "Rooms" }).ToList();
+            var rooms = _roomsRepository.GetAll().ToList();
             //foreach (var room in rooms)
             //{
             //    room.Hotel = null;
