@@ -44,12 +44,20 @@ namespace HotelServer.Controllers
             var Id = SupportFunctions.GeneralId("R");
             newRoom.Id = Id;
 
+            var hotelInDb = _hotelService.GetById(request.HotelId);
+            if(hotelInDb == null )
+            {
+                response.State = false;
+                response.Message = "Hotel doesn't exits!";
+                return Ok(response);
+            }
+
             newRoom.TypeRoomId = request.TypeRoomId;
             newRoom.Status = true;
             newRoom.Amount = request.Amount;
             newRoom.Image = request.Image;
             newRoom.Bed = request.Bed;
-            newRoom.HotelId = request.HotelId;
+            newRoom.HotelId = hotelInDb.Id;
             newRoom.Price = request.Price;
             newRoom.Services = request.Services;
             newRoom.PriceDiscount = request.PriceDiscount;
