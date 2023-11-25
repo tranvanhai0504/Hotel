@@ -26,7 +26,6 @@ namespace HotelServer.Data.Infrastructure
         {
             DbFactory = dbFactory;
             dbSet = DbContext.Set<T>();
-
         }
 
         #region Implementation

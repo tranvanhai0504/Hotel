@@ -93,12 +93,13 @@ namespace HotelServer.Controllers.request
             newBill.Total = roomDb.Price * request.amountRoom * request.Period;
 
             _billService.Add(newBill);
+            _billService.SaveChanges();
 
             //subtract number of room
             roomDb.Amount -= request.amountRoom;
 
             _roomService.Update(roomDb);
-            _unitOfWork.Commit();
+            _roomService.SaveChanges();
 
             response.State = true;
             response.Message = "Add new bill successful!";
@@ -131,8 +132,10 @@ namespace HotelServer.Controllers.request
             var roomInDb = _roomService.GetById(bill.RoomId);
             roomInDb.Amount += bill.Amount;
             _billService.Delete(bill.Id);
+            _billService.SaveChanges();
+
             _roomService.Update(roomInDb);
-            _unitOfWork.Commit();
+            _roomService.SaveChanges();
 
             response.State = true;
             response.Message = "Delete bill successful!";
@@ -170,7 +173,7 @@ namespace HotelServer.Controllers.request
 
             billInDb.Status = true;
             _billService.Update(billInDb);
-            _unitOfWork.Commit();
+            _billService.SaveChanges();
 
             response.State = true;
             response.Message = "Finish bill successful!";
@@ -277,6 +280,10 @@ namespace HotelServer.Controllers.request
             billInDb.RoomId = request.RoomId;
             billInDb.Date = request.Date;
             billInDb.Amount = request.amountRoom;
+
+            _billService.Update(billInDb);
+            _billService.SaveChanges();
+
             response.State = true;
             response.Message = "Successful!";
             return Ok(response);

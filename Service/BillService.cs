@@ -1,6 +1,7 @@
 ﻿using HotelServer.Data.Infrastructure;
 using HotelServer.Data.Respositories;
 using HotelServer.Model;
+using System.Collections.Generic;
 
 namespace HotelServer.Service
 {
@@ -21,11 +22,13 @@ namespace HotelServer.Service
     {
         IBillRepository _billRepository;
         IUnitOfWork _unitOfWork;
+        IHotelRepository _hotelRepository;
 
-        public BillService(IBillRepository billRepository, IUnitOfWork unitOfWork)
+        public BillService(IBillRepository billRepository, IUnitOfWork unitOfWork, IHotelRepository hotelRepository)
         {
             this._billRepository = billRepository;
             this._unitOfWork = unitOfWork;
+            this._hotelRepository = hotelRepository;
         }
         public void Add(Bill bill)
         {
@@ -57,7 +60,12 @@ namespace HotelServer.Service
 
         public IEnumerable<Bill> GetAllByUserID(string id)
         {
-            return _billRepository.GetMulti(x => x.UserId == id, new string[] { "Room", "User" });
+            IEnumerable<Bill> listBill = _billRepository.GetMulti(x => x.UserId == id, new string[] { "Room", "User" });
+            foreach(Bill bill in listBill)
+            {
+                bill.Room.Hotel = _hotelRepository.GetSingleById(bill.Room.HotelId);
+            }
+            return listBill;
         }
 
         public Bill GetById(string id)
@@ -67,7 +75,7 @@ namespace HotelServer.Service
 
         public void SaveChanges()
         {
-            throw new NotImplementedException();
+            _unitOfWork.Commit();
         }
 
         public void Update(Bill bill)
