@@ -52,12 +52,12 @@ namespace HotelServer.Service
 
         public IEnumerable<Bill> GetAll()
         {
-            return _billRepository.GetAll(new string[] { "Bill" });
+            return _billRepository.GetAll(new string[] { "Room", "User" }).ToList();
         }
 
         public IEnumerable<Bill> GetAllByUserID(string id)
         {
-            return _billRepository.GetMulti(x => x.UserId == id);
+            return _billRepository.GetMulti(x => x.UserId == id, new string[] { "Room", "User" });
         }
 
         public Bill GetById(string id)

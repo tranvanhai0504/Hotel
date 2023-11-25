@@ -47,7 +47,7 @@ namespace HotelServer.Controllers.request
         public async Task<IActionResult> AddBill(BillRequest request)
         {
             var response = new AuthResponse();
-            if(request.UserId == "" || request.RoomId == "" || request.Date == null)
+            if(request.UserId == "" || request.Date == null)
             {
                 response.State = false;
                 response.Message = "Missing field required!";
@@ -185,6 +185,7 @@ namespace HotelServer.Controllers.request
             var response = new AuthResponse();
 
             var allBill = _billService.GetAll();
+
             response.State = true;
             response.Message = "Get all bill successful!";
             response.Data = allBill;

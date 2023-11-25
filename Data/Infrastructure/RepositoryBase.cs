@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
@@ -76,6 +77,7 @@ namespace HotelServer.Data.Infrastructure
                 {
                     query = query.Include(include);
                 }
+                return query.AsQueryable<T>();
             }
             return _context.Set<T>().AsQueryable();
         }
