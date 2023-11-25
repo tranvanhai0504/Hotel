@@ -86,14 +86,13 @@ namespace HotelServer.Controllers.request
             newBill.Id = newId;
             newBill.Status = false;
             newBill.Period = request.Period;
-            newBill.UserId = request.UserId;
-            newBill.RoomId = request.RoomId;
+            newBill.UserId = userInDb.Id;
+            newBill.RoomId = roomDb.Id;
             newBill.Date = request.Date;
             newBill.Amount = request.amountRoom;
             newBill.Total = roomDb.Price * request.amountRoom * request.Period;
 
             _billService.Add(newBill);
-            _billService.SaveChanges();
 
             //subtract number of room
             roomDb.Amount -= request.amountRoom;
@@ -132,7 +131,6 @@ namespace HotelServer.Controllers.request
             var roomInDb = _roomService.GetById(bill.RoomId);
             roomInDb.Amount += bill.Amount;
             _billService.Delete(bill.Id);
-            _billService.SaveChanges();
 
             _roomService.Update(roomInDb);
             _roomService.SaveChanges();

@@ -12,12 +12,12 @@ namespace HotelServer.Controllers
     public interface IRoomController
     {
         public IActionResult GetAllRoom();
-        public IActionResult GetRoomDetail(string id);
+        public Task<IActionResult> GetRoomDetail(string id);
         public Task<IActionResult> GetAllTypeRoom();
         public IActionResult AddRoom(RoomRequest request);
         public IActionResult DeleteRoom(SingleIdRequest request);
         public IActionResult UpdateRoom(RoomRequest request);
-        public IActionResult Search(string location, int amountRoom);
+        public Task<IActionResult> Search(string location, int amountRoom);
     }
     [Route("[controller]")]
     [ApiController]
@@ -119,7 +119,7 @@ namespace HotelServer.Controllers
 
         [HttpGet("getDetail")]
         [Authorize]
-        public IActionResult GetRoomDetail(string id)
+        public async Task<IActionResult> GetRoomDetail(string id)
         {
             var response = new AuthResponse();
             if (id == null)
@@ -142,7 +142,7 @@ namespace HotelServer.Controllers
             roomdb.Hotel = hotelOfRoom;
 
             //get type
-            var roomType = _roomService.GetTypeOfRoom(roomdb.TypeRoomId);
+            var roomType = await _roomService.GetTypeOfRoom(roomdb.TypeRoomId);
             roomdb.TypeRoom = roomType;
 
             response.State = true;
@@ -153,12 +153,12 @@ namespace HotelServer.Controllers
 
         [HttpGet("search")]
         [Authorize]
-        public IActionResult Search(string location, int amountRoom)
+        public async Task<IActionResult> Search(string location, int amountRoom)
         {
             var hotelsInLocation = _hotelService.GetAllByFilter(hotel => hotel.Location.ToLower().Contains(location.ToLower()));
             foreach(var hotel in hotelsInLocation)
             {
-                var rooms = _roomService.GetRoomByFilter(room => room.HotelId == hotel.Id && room.Amount >= amountRoom);
+                var rooms = await _roomService.GetRoomByFilter(room => room.HotelId == hotel.Id && room.Amount >= amountRoom);
                 hotel.Rooms = rooms;
             }
 
@@ -215,11 +215,11 @@ namespace HotelServer.Controllers
 
         [HttpGet("getByHotelId")]
         [Authorize]
-        public IActionResult GetRoomsByHotelId(string id)
+        public async Task<IActionResult> GetRoomsByHotelId(string id)
         {
             var response = new AuthResponse();
 
-            var rooms = _roomService.GetRoomByFilter(room => room.HotelId == id);
+            var rooms = await _roomService.GetRoomByFilter(room => room.HotelId == id);
 
             response.State = true;
             response.Message = "Get all rooms successful!";

@@ -7,7 +7,7 @@ namespace HotelServer.Data.Respositories
     public interface IRoomRepository : IRepository<Room>
     {
         Task<IEnumerable<TypeRoom>> GetTypeRooms();
-        TypeRoom GetTypeOfRoom(string idType);
+        Task<TypeRoom> GetTypeOfRoom(string idType);
     }
     public class RoomRepository : RepositoryBase<Room>, IRoomRepository
     {
@@ -16,9 +16,10 @@ namespace HotelServer.Data.Respositories
 
         }
 
-        public TypeRoom GetTypeOfRoom(string idType)
+        public async Task<TypeRoom> GetTypeOfRoom(string idType)
         {
-            var typeRoom = DbContext.TypeRoom.ToList().Find(typeRoom => typeRoom.Id == idType);
+            var typeRooms = await DbContext.TypeRoom.ToListAsync();
+            var typeRoom = typeRooms.Find(typeRoom => typeRoom.Id == idType);
             return typeRoom;
         }
 

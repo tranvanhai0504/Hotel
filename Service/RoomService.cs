@@ -1,6 +1,7 @@
 ﻿using HotelServer.Data.Infrastructure;
 using HotelServer.Data.Respositories;
 using HotelServer.Model;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace HotelServer.Service
@@ -15,8 +16,8 @@ namespace HotelServer.Service
         void ChangeAmount(string id,  int amount);
         void ChangeImage(string id, string image);
         Task<IEnumerable<TypeRoom>> GetTypeRooms();
-        TypeRoom GetTypeOfRoom(string idType);
-        IEnumerable<Room> GetRoomByFilter(Expression<Func<Room, bool>> predicate);
+        Task<TypeRoom> GetTypeOfRoom(string idType);
+        Task<IEnumerable<Room>> GetRoomByFilter(Expression<Func<Room, bool>> predicate);
         void SaveChanges();
 
     } 
@@ -85,15 +86,15 @@ namespace HotelServer.Service
             _roomsRepository.Update(room);
         }
 
-        public TypeRoom GetTypeOfRoom(string idType)
+        public async Task<TypeRoom> GetTypeOfRoom(string idType)
         {
-            var type = _roomsRepository.GetTypeOfRoom(idType);
+            var type = await _roomsRepository.GetTypeOfRoom(idType);
             return type;
         }
 
-        public IEnumerable<Room> GetRoomByFilter(Expression<Func<Room, bool>> predicate)
+        public async Task<IEnumerable<Room>> GetRoomByFilter(Expression<Func<Room, bool>> predicate)
         {
-            var roomFilter = _roomsRepository.GetMulti(predicate).ToList();
+            var roomFilter = await _roomsRepository.GetMulti(predicate).ToListAsync();
             return roomFilter;
         }
 
