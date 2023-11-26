@@ -78,7 +78,7 @@ namespace HotelServer.Service
 
         public Room GetById(string id)
         {
-            return _roomsRepository.GetSingleById(id);
+            return _roomsRepository.GetSingleByCondition(room => room.Id == id, new string[] {"Hotel", "TypeRoom"});
         }
 
         public void Update(Room room)

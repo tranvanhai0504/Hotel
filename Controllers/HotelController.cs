@@ -68,9 +68,6 @@ namespace HotelServer.Controllers
                 return BadRequest(response);
             }
 
-            //var roomOfHotel = await _hotelService.GetAllRooms(hoteldb.Id);
-            //hoteldb.Rooms = roomOfHotel;
-
             response.State = true;
             response.Message = "Success";
             response.Data = hoteldb;

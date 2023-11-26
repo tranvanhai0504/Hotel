@@ -93,6 +93,7 @@ namespace HotelServer.Controllers.request
             newBill.Total = roomDb.Price * request.amountRoom * request.Period;
 
             _billService.Add(newBill);
+            _billService.SaveChanges();
 
             //subtract number of room
             roomDb.Amount -= request.amountRoom;
@@ -163,7 +164,7 @@ namespace HotelServer.Controllers.request
             }
 
             //get user
-            var user = await _userManager.FindByIdAsync(request.Id);
+            var user = await _userManager.FindByIdAsync(billInDb.UserId);
 
             //send email
             string content = $"<h3>Hóa đơn mã #{billInDb.Id} đã được xác nhận!</h3>";

@@ -136,15 +136,6 @@ namespace HotelServer.Controllers
                 return BadRequest(response);
             }
 
-            //get hotel
-            var hotelOfRoom = _hotelService.GetById(roomdb.HotelId);
-            hotelOfRoom.Rooms = null;
-            roomdb.Hotel = hotelOfRoom;
-
-            //get type
-            var roomType = await _roomService.GetTypeOfRoom(roomdb.TypeRoomId);
-            roomdb.TypeRoom = roomType;
-
             response.State = true;
             response.Message = "Success";
             response.Data = roomdb;
@@ -156,11 +147,6 @@ namespace HotelServer.Controllers
         public async Task<IActionResult> Search(string location, int amountRoom)
         {
             var hotelsInLocation = _hotelService.GetAllByFilter(hotel => hotel.Location.ToLower().Contains(location.ToLower()));
-            foreach(var hotel in hotelsInLocation)
-            {
-                var rooms = await _roomService.GetRoomByFilter(room => room.HotelId == hotel.Id && room.Amount >= amountRoom);
-                hotel.Rooms = rooms;
-            }
 
             var response = new AuthResponse();
             response.State = true;

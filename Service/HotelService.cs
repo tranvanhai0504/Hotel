@@ -54,7 +54,7 @@ namespace HotelServer.Service
 
         public IEnumerable<Hotel> GetAllByFilter(Expression<Func<Hotel, bool>> predicate)
         {
-            var hotels = _hotelRepository.GetMulti(predicate);
+            var hotels = _hotelRepository.GetMulti(predicate, new string[] {"Rooms"});
             return hotels;
         }
 
